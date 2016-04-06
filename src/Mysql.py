@@ -3,28 +3,19 @@ import mysql.connector
 cnx = mysql.connector.connect(user='root', password='root', host='127.0.0.1', database='reviews')
 cursor = cnx.cursor()
 
-class Insert:
-    def __init__(self, files, messages, comments, sub):
-        self.insert(files, messages, comments, sub)
 
-    def is_empty(self, json):
-        if json:
-            self.insertIntoMongo(json);
-        else:
-            print("vazio")
+class insert:
+    def __init__(self, files, messages, sub):
+        self.insert(files, messages, sub)
 
-    def insert(self, files, messages, comments, sub):
-        add_employee = ("INSERT INTO android"
-                        "(files, menssages, comments, sub) "
-                        "VALUES (%s, %s, %s, %s)")
+    def insert(self, files, messages, sub):
+        add = ("INSERT INTO android"
+                        "(files, messages, sub)"
+                        "VALUES (%s, %s, %s)")
 
-        data_employee = (files, messages, comments, sub)
+        data = (files, messages, sub)
 
-        cursor.execute(add_employee, data_employee)
+        cursor.execute(add, data)
         cnx.commit()
         cursor.close()
         cnx.close()
-
-
-
-
