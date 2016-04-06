@@ -1,12 +1,13 @@
 from pymongo import MongoClient
-con = MongoClient('mongodb://localhost:27017/')
+
 
 class Insert:
-    def __init__(self, json):
-        self.insertIntoMongo(json)
+    def __init__(self, json, database):
+        self.insertIntoMongo(json, database)
 
-    def insertIntoMongo(self, json):
-        db = con.miner2
+    @staticmethod
+    def insert(json, database):
+        connection = MongoClient('mongodb://localhost:27017/')
+        db = connection[database]
         reviews = db.reviews
-        result = reviews.insert_one(json)
-        result.inserted_id
+        reviews.insert_one(json)
