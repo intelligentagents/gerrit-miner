@@ -3,7 +3,7 @@ from pymongo import MongoClient
 
 class Insert:
     def __init__(self, json, database):
-        self.insertIntoMongo(json, database)
+        self.insert(json, database)
 
     @staticmethod
     def insert(json, database):
