@@ -1,6 +1,5 @@
 from requests import get
 from json import loads
-from src.Mysql import
 
 
 class Miner:
@@ -16,45 +15,48 @@ class Miner:
             request = get(url)
 
             if request.status_code == 200:
-                print("    " + url + " - Mined")
                 return loads(request.text[5:])
             else:
                 print("Error")
                 return -1
 
-    def mine_details(self, number, domain):
+    @staticmethod
+    def mine_details(number, domain):
         details = ['/detail?O=10004']
+        keywords = ['buffer', 'overflow', 'stack', 'format', 'string','printf', 'scanf', 'integer', 'overflow', \
+                    'signedness', 'widthness', 'underflow', 'SQL', 'SQLI', 'injection', 'race', 'racy', 'deadlock', \
+                    'improper', 'unauthenticated', 'gain access', 'permission', 'denial service', 'DOS', 'cross site', \
+                    'request forgery', 'CSRF', 'XSRF', 'forged', 'security', 'vulnerability', 'vulnerable', 'hole', \
+                    'exploit', 'attack', 'bypass', 'backdoor', 'crash', 'threat', 'expose', 'breach', 'violate', \
+                    'blacklist', 'overrun', 'insecure']
 
         for detail in details:
             url = domain + "changes/" + str(number) + detail
             request = get(url)
 
             if request.status_code == 200:
-                print("    " + url + " - Mined")
                 response = loads(request.text[5:])
                 messages = response['messages']
-                files = self.mine_revisions(number, response['current_revision'], domain)
 
-                message = ",".join(messages)
-                file = ",".join(files.keys())
+                message = ",".join(str(m) for m in messages)
                 subject = response['subject']
 
-                # INSERT HERE
-
-                # if detail == "/detail?O=10004":
-                #     self.mine_revisions(number, response['current_revision'], domain)
+                for keyword in keywords:
+                    if keyword in message:
+                        print("  Found keyword: " + keyword + ". Stopping to search ...\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                              str(number) + "\n" + "    Subject: " + subject)
+                        break
             else:
                 print("Error")
 
     def mine_reviews(self, number, domain):
-        print("  Mining commit " + str(number))
 
         self.mine_details(number, domain)
 
     def mine(self, domain, status):
         k = 0
 
-        while k < 100:
+        while k <= 9999:
             url = domain + "changes/?q=status:" + status + "&n=100&O=81&S=" + str(k)
             request = get(url)
 
