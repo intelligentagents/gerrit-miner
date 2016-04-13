@@ -36,8 +36,9 @@ class Miner:
 
                 for keyword in keywords:
                     if keyword in message:
-                        print("  Found keyword: " + keyword + ". Stopping to search ...\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
-                              str(commit) + "\n" + "    Subject: " + subject)
+                        print(
+                            "  Found keyword: " + keyword + ". Stopping to search ...\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                            str(commit) + "\n" + "    Subject: " + subject)
                         break
             else:
                 print("Error")
@@ -47,29 +48,33 @@ class Miner:
         self.mine_revisions(commit, current_revision, domain)
 
     def search_vccs(self, commit, domain):
-        comments_urls = ['/detail?O=10004']
-
         with open('data/keywords.json') as keywords_file:
-            keywords = load(keywords_file)
+            keywords_json = load(keywords_file)
 
-        for comment_url in comments_urls:
-            url = domain + "changes/" + str(commit) + comment_url
-            request = get(url)
+        base_url = domain + "changes/" + str(commit)
+        url = base_url + "/detail?O=10004"
+        request = get(url)
 
-            if request.status_code == 200:
-                response = loads(request.text[5:])
+        if request.status_code == 200:
+            response = loads(request.text[5:])
 
-                message = ",".join(str(m) for m in response['messages'])
-
-                for keyword in keywords['keywords']:
-                    if keyword in message:
+            for message in response['messages']:
+                for keyword in keywords_json['keywords']:
+                    if keyword in message['message']:
                         subject = response['subject']
 
-                        print("  Found keyword: " + keyword + ". Stopping to search ...\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                        print("  Found keyword: " + keyword + "\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
                               str(commit) + "\n" + "    Subject: " + subject)
-                        break
-            else:
-                print("Error")
+        else:
+            print("Error")
+
+        url = base_url + "/comments"
+        request = get(url)
+
+        if request.status_code == 200:
+            response = loads(request.text[5:])
+
+
 
     def mine(self, domain, status):
         k = 0
