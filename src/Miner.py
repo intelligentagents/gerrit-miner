@@ -15,10 +15,9 @@ class Miner:
             request = get(url)
 
             if request.status_code == 200:
-                return loads(request.text[5:])
+                response = loads(request.text[5:])
             else:
                 print('Error')
-                return -1
 
     @staticmethod
     def mine_details(commit, domain):
@@ -30,16 +29,6 @@ class Miner:
 
             if request.status_code == 200:
                 response = loads(request.text[5:])
-
-                message = ",".join(str(m) for m in response['messages'])
-                subject = response['subject']
-
-                for keyword in keywords:
-                    if keyword in message:
-                        print(
-                            "  Found keyword: " + keyword + ". Stopping to search ...\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
-                            str(commit) + "\n" + "    Subject: " + subject)
-                        break
             else:
                 print("Error")
 
@@ -51,10 +40,14 @@ class Miner:
         with open('data/keywords.json') as keywords_file:
             keywords_json = load(keywords_file)
 
+        # Base URL for requests
         base_url = domain + "changes/" + str(commit)
+
+        # URL to details of a commit
         url = base_url + "/detail?O=10004"
         request = get(url)
 
+        # If request was successful, look for keywords in messages
         if request.status_code == 200:
             response = loads(request.text[5:])
 
@@ -63,18 +56,25 @@ class Miner:
                     if keyword in message['message']:
                         subject = response['subject']
 
-                        print("  Found keyword: " + keyword + "\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
-                              str(commit) + "\n" + "    Subject: " + subject)
+                        print("  Found keyword: " + "\033[1m" + keyword + "\033[0m" + " in message\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                              str(commit) + "\n" + "    Subject: " + subject + "\n" + "    Message ID: " + message['id'])
         else:
             print("Error")
 
+        # URL to comments of a commit
         url = base_url + "/comments"
         request = get(url)
 
+        # If request was successful, look for keywords in comments
         if request.status_code == 200:
             response = loads(request.text[5:])
 
-
+            for key in response.keys():
+                for comment in response[key]:
+                    for keyword in keywords_json['keywords']:
+                        if keyword in comment['message']:
+                            print("  Found keyword: " + "\033[1m" + keyword + "\033[0m" + " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                                  str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " + comment['id'])
 
     def mine(self, domain, status):
         k = 0
