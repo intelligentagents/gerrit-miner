@@ -36,15 +36,32 @@ class Miner:
         self.mine_details(commit, domain)
         self.mine_revisions(commit, current_revision, domain)
 
-    def search_vccs(self, commit, domain):
-        with open('data/keywords.json') as keywords_file:
-            keywords_json = load(keywords_file)
+    @staticmethod
+    def search_vccs_in_comments(base_url, keywords_json, commit, domain):
+        # URL to comments of a commit
+        url = base_url + "/comments"
 
-        # Base URL for requests
-        base_url = domain + "changes/" + str(commit)
+        # Request the JSON file of this URL
+        request = get(url)
 
+        # If request was successful, look for keywords in comments
+        if request.status_code == 200:
+            response = loads(request.text[5:])
+
+            for key in response.keys():
+                for comment in response[key]:
+                    for keyword in keywords_json['keywords']:
+                        if keyword in comment['message']:
+                            print(
+                                "  Found keyword: " + "\033[1m" + keyword + "\033[0m" + " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                                str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " + comment['id'])
+
+    @staticmethod
+    def search_vccs_in_messages(base_url, keywords_json, commit, domain):
         # URL to details of a commit
         url = base_url + "/detail?O=10004"
+
+        # Request the JSON file of this URL
         request = get(url)
 
         # If request was successful, look for keywords in messages
@@ -56,25 +73,21 @@ class Miner:
                     if keyword in message['message']:
                         subject = response['subject']
 
-                        print("  Found keyword: " + "\033[1m" + keyword + "\033[0m" + " in message\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
-                              str(commit) + "\n" + "    Subject: " + subject + "\n" + "    Message ID: " + message['id'])
+                        print(
+                            "  Found keyword: " + "\033[1m" + keyword + "\033[0m" + " in message\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                            str(commit) + "\n" + "    Subject: " + subject + "\n" + "    Message ID: " + message['id'])
         else:
             print("Error")
 
-        # URL to comments of a commit
-        url = base_url + "/comments"
-        request = get(url)
+    def search_vccs(self, commit, domain):
+        # Base URL for requests
+        base_url = domain + "changes/" + str(commit)
 
-        # If request was successful, look for keywords in comments
-        if request.status_code == 200:
-            response = loads(request.text[5:])
+        with open('data/keywords.json') as keywords_file:
+            keywords_json = load(keywords_file)
 
-            for key in response.keys():
-                for comment in response[key]:
-                    for keyword in keywords_json['keywords']:
-                        if keyword in comment['message']:
-                            print("  Found keyword: " + "\033[1m" + keyword + "\033[0m" + " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
-                                  str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " + comment['id'])
+        self.search_vccs_in_messages(base_url, keywords_json, commit, domain)
+        self.search_vccs_in_comments(base_url, keywords_json, commit, domain)
 
     def mine(self, domain, status):
         k = 0
