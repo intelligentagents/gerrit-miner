@@ -1,5 +1,5 @@
 from requests import get
-from json import loads
+from json import loads, load
 
 
 class Miner:
@@ -7,51 +7,69 @@ class Miner:
         self.mine(domain, stat)
 
     @staticmethod
-    def mine_revisions(number, current_revision, domain):
+    def mine_revisions(commit, current_revision, domain):
         revisions = ['/files']
 
         for revision in revisions:
-            url = domain + "changes/" + str(number) + "/revisions/" + str(current_revision) + revision
+            url = domain + 'changes/' + str(commit) + '/revisions/' + str(current_revision) + revision
             request = get(url)
 
             if request.status_code == 200:
                 return loads(request.text[5:])
             else:
-                print("Error")
+                print('Error')
                 return -1
 
     @staticmethod
-    def mine_details(number, domain):
+    def mine_details(commit, domain):
         details = ['/detail?O=10004']
-        keywords = ['buffer', 'overflow', 'stack', 'format', 'string','printf', 'scanf', 'integer', 'overflow', \
-                    'signedness', 'widthness', 'underflow', 'SQL', 'SQLI', 'injection', 'race', 'racy', 'deadlock', \
-                    'improper', 'unauthenticated', 'gain access', 'permission', 'denial service', 'DOS', 'cross site', \
-                    'request forgery', 'CSRF', 'XSRF', 'forged', 'security', 'vulnerability', 'vulnerable', 'hole', \
-                    'exploit', 'attack', 'bypass', 'backdoor', 'crash', 'threat', 'expose', 'breach', 'violate', \
-                    'blacklist', 'overrun', 'insecure']
 
         for detail in details:
-            url = domain + "changes/" + str(number) + detail
+            url = domain + "changes/" + str(commit) + detail
             request = get(url)
 
             if request.status_code == 200:
                 response = loads(request.text[5:])
-                messages = response['messages']
 
-                message = ",".join(str(m) for m in messages)
+                message = ",".join(str(m) for m in response['messages'])
                 subject = response['subject']
 
                 for keyword in keywords:
                     if keyword in message:
                         print("  Found keyword: " + keyword + ". Stopping to search ...\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
-                              str(number) + "\n" + "    Subject: " + subject)
+                              str(commit) + "\n" + "    Subject: " + subject)
                         break
             else:
                 print("Error")
 
-    def mine_reviews(self, number, domain):
+    def mine_review(self, commit, current_revision, domain):
+        self.mine_details(commit, domain)
+        self.mine_revisions(commit, current_revision, domain)
 
-        self.mine_details(number, domain)
+    def search_vccs(self, commit, domain):
+        comments_urls = ['/detail?O=10004']
+
+        with open('data/keywords.json') as keywords_file:
+            keywords = load(keywords_file)
+
+        for comment_url in comments_urls:
+            url = domain + "changes/" + str(commit) + comment_url
+            request = get(url)
+
+            if request.status_code == 200:
+                response = loads(request.text[5:])
+
+                message = ",".join(str(m) for m in response['messages'])
+
+                for keyword in keywords['keywords']:
+                    if keyword in message:
+                        subject = response['subject']
+
+                        print("  Found keyword: " + keyword + ". Stopping to search ...\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                              str(commit) + "\n" + "    Subject: " + subject)
+                        break
+            else:
+                print("Error")
 
     def mine(self, domain, status):
         k = 0
@@ -64,7 +82,7 @@ class Miner:
                 reviews = loads(request.text[5:])
 
                 for review in reviews:
-                    self.mine_reviews(review['_number'], domain)
+                    self.search_vccs(review['_number'], domain)
 
                 print("")
 
