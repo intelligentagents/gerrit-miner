@@ -1,49 +1,358 @@
 {
   "keywords": [
-    "buffer",
-    "overflow",
-    "stack",
-    "format",
-    "string",
-    "printf",
-    "scanf",
-    "integer",
-    "overflow",
-    "signedness",
-    "widthness",
-    "underflow",
-    "SQL",
-    "SQLI",
-    "injection",
-    "race",
-    "racy",
-    "deadlock",
-    "improper",
-    "unauthenticated",
-    "gain access",
-    "permission",
-    "denial service",
-    "DOS",
-    "cross site",
-    "request forgery",
-    "CSRF",
-    "XSRF",
-    "forged",
-    "security",
-    "vulnerability",
-    "vulnerable",
-    "hole",
-    "exploit",
-    "attack",
-    "bypass",
-    "backdoor",
-    "crash",
-    "threat",
-    "expose",
-    "breach",
-    "violate",
-    "blacklist",
-    "overrun",
-    "insecure"
+    {
+      "keyword": "buffer",
+      "depends_on": [
+        "overflow"
+      ],
+      "vulnerabilities": [
+        "Buffer Overflow"
+      ]
+    },
+    {
+      "keyword": "stack",
+      "depends_on": [
+        "overflow"
+      ],
+      "vulnerabilities": [
+        "Stack Overflow"
+      ]
+    },
+    {
+      "keyword": "integer",
+      "depends_on": [
+        "overflow",
+        "underflow"
+      ],
+      "vulnerabilities": [
+        "Integer Overflow"
+      ]
+    },
+    {
+      "keyword": "overflow",
+      "depends_on": [
+        "buffer",
+        "stack",
+        "integer"
+      ],
+      "vulnerabilities": [
+        "Buffer Overflow",
+        "Stack Overflow",
+        "Integer Overflow"
+      ]
+    },
+    {
+      "keyword": "signedness",
+      "depends_on": [
+        "overflow",
+        "integer",
+        "underflow"
+      ],
+      "vulnerabilities": [
+        "Integer Overflow"
+      ]
+    },
+    {
+      "keyword": "widthness",
+      "depends_on": [
+        "overflow",
+        "integer",
+        "underflow"
+      ],
+      "vulnerabilities": [
+        "Integer Overflow"
+      ]
+    },
+    {
+      "keyword": "underflow",
+      "depends_on": [
+        "integer"
+      ],
+      "vulnerabilities": [
+        "Integer Overflow"
+      ]
+    },
+    {
+      "keyword": "SQL",
+      "depends_on": [
+        "injection"
+      ],
+      "vulnerabilities": [
+        "SQL Injection"
+      ]
+    },
+    {
+      "keyword": "SQLI",
+      "depends_on": [
+        "injection"
+      ],
+      "vulnerabilities": [
+        "SQL Injection"
+      ]
+    },
+    {
+      "keyword": "injection",
+      "depends_on": [
+        "SQL",
+        "SQLI"
+      ],
+      "vulnerabilities": [
+        "SQL Injection"
+      ]
+    },
+    {
+      "keyword": "race",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Race Condition"
+      ]
+    },
+    {
+      "keyword": "racy",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Race Condition"
+      ]
+    },
+    {
+      "keyword": "deadlock",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Deadlock"
+      ]
+    },
+    {
+      "keyword": "improper access",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Improper Access"
+      ]
+    },
+    {
+      "keyword": "unauthenticated access",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Improper Access"
+      ]
+    },
+    {
+      "keyword": "gain access",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Improper Access"
+      ]
+    },
+    {
+      "keyword": "permission",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Improper Access"
+      ]
+    },
+    {
+      "keyword": "denial service",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Denial of Service"
+      ]
+    },
+    {
+      "keyword": "DOS",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Denial of Service"
+      ]
+    },
+    {
+      "keyword": "request forgery",
+      "depends_on": [
+        "cross site"
+      ],
+      "vulnerabilities": [
+        "Cross Site Request Forgery"
+      ]
+    },
+    {
+      "keyword": "CSRF",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Cross Site Request Forgery"
+      ]
+    },
+    {
+      "keyword": "XSRF",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Cross Site Request Forgery"
+      ]
+    },
+    {
+      "keyword": "forged",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Cross Site Request Forgery"
+      ]
+    },
+    {
+      "keyword": "CSS",
+      "depends_on": [
+        "XSS",
+        "cross site"
+      ],
+      "vulnerabilities": [
+        "Cross Site Scripting"
+      ]
+    },
+    {
+      "keyword": "XSS",
+      "depends_on": null,
+      "vulnerabilities": [
+        "Cross Site Scripting"
+      ]
+    },
+    {
+      "keyword": "htmlspecialchar",
+      "depends_on": [
+        "XSS",
+        "CSS",
+        "cross site"
+      ],
+      "vulnerabilities": [
+        "Cross Site Scripting"
+      ]
+    },
+    {
+      "keyword": "cross site",
+      "depends_on": [
+        "request forgery",
+        "scripting"
+      ],
+      "vulnerabilities": [
+        "Cross Site Request Forgery",
+        "Cross Site Scripting"
+      ]
+    },
+    {
+      "keyword": "format",
+      "depends_on": [
+        "string",
+        "printf",
+        "scanf"
+      ],
+      "vulnerabilities": [
+        "Format String"
+      ]
+    },
+    {
+      "keyword": "string",
+      "depends_on": [
+        "format",
+        "printf",
+        "scanf"
+      ],
+      "vulnerabilities": [
+        "Format String"
+      ]
+    },
+    {
+      "keyword": "printf",
+      "depends_on": [
+        "string",
+        "format"
+      ],
+      "vulnerabilities": [
+        "Format String"
+      ]
+    },
+    {
+      "keyword": "scanf",
+      "depends_on": [
+        "string",
+        "format"
+      ],
+      "vulnerabilities": [
+        "Format String"
+      ]
+    },
+    {
+      "keyword": "security",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "vulnerability",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "vulnerable",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "hole",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "exploit",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "attack",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "bypass",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "backdoor",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "crash",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "threat",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "expose",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "breach",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "violate",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "blacklist",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "overrun",
+      "depends_on": null,
+      "vulnerabilities": null
+    },
+    {
+      "keyword": "insecure",
+      "depends_on": null,
+      "vulnerabilities": null
+    }
   ]
 }
