@@ -51,9 +51,9 @@ class Miner:
             for key in response.keys():
                 for comment in response[key]:
                     for keyword in keywords_json['keywords']:
-                        if keyword in comment['message']:
+                        if keyword['keyword'] in comment['message']:
                             print(
-                                "  Found keyword: " + "\033[1m" + keyword + "\033[0m" + " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                                "  Found keyword: " + "\033[1m" + keyword['keyword'] + "\033[0m" + " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
                                 str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " + comment['id'])
 
     @staticmethod
@@ -70,11 +70,11 @@ class Miner:
 
             for message in response['messages']:
                 for keyword in keywords_json['keywords']:
-                    if keyword in message['message']:
+                    if keyword['keyword'] in message['message']:
                         subject = response['subject']
 
                         print(
-                            "  Found keyword: " + "\033[1m" + keyword + "\033[0m" + " in message\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
+                            "  Found keyword: " + "\033[1m" + keyword['keyword'] + "\033[0m" + " in message\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
                             str(commit) + "\n" + "    Subject: " + subject + "\n" + "    Message ID: " + message['id'])
         else:
             print("Error")
