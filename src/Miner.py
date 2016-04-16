@@ -47,14 +47,25 @@ class Miner:
         # If request was successful, look for keywords in comments
         if request.status_code == 200:
             response = loads(request.text[5:])
+            keys = response.keys()
 
-            for key in response.keys():
+            for key in keys:
                 for comment in response[key]:
-                    for keyword in keywords_json['keywords']:
-                        if keyword['keyword'] in comment['message']:
-                            print(
-                                "  Found keyword: " + "\033[1m" + keyword['keyword'] + "\033[0m" + " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
-                                str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " + comment['id'])
+                    for keywords in keywords_json['keywords']:
+                        if keywords['keyword'] in comment['message']:
+                            if keywords['depends_on']:
+                                for dependency in keywords['depends_on']:
+                                    if dependency in comment['message']:
+                                        print("  Found keyword: " + "\033[1m" + keywords['keyword'] + "\033[0m" +
+                                              " and the dependency: " + "\033[1m" + dependency + "\033[0m" +
+                                              " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " +
+                                              str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " +
+                                              comment['id'])
+                            else:
+                                print("  Found keyword: " + "\033[1m" + keywords['keyword'] + "\033[0m" +
+                                      " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " +
+                                      str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " +
+                                      comment['id'])
 
     @staticmethod
     def search_vccs_in_messages(base_url, keywords_json, commit, domain):
@@ -69,13 +80,17 @@ class Miner:
             response = loads(request.text[5:])
 
             for message in response['messages']:
-                for keyword in keywords_json['keywords']:
-                    if keyword['keyword'] in message['message']:
-                        subject = response['subject']
+                for keywords in keywords_json['keywords']:
+                    if keywords['keyword'] in message['message']:
+                        if keywords['depends_on']:
+                            for dependency in keywords['depends_on']:
+                                if dependency in message['message']:
+                                    subject = response['subject']
 
-                        print(
-                            "  Found keyword: " + "\033[1m" + keyword['keyword'] + "\033[0m" + " in message\n" + "    Domain: " + domain + "\n" + "    Commit: " + \
-                            str(commit) + "\n" + "    Subject: " + subject + "\n" + "    Message ID: " + message['id'])
+                                    print("  Found keyword: " + "\033[1m" + keywords['keyword'] + "\033[0m" +
+                                          " in message\n" + "    Domain: " + domain + "\n" + "    Commit: " +
+                                          str(commit) + "\n" + "    Subject: " + subject + "\n" + "    Message ID: " +
+                                          message['id'])
         else:
             print("Error")
 
