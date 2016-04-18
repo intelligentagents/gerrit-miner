@@ -58,14 +58,16 @@ class Miner:
                                     if dependency in comment['message']:
                                         print("  Found keyword: " + "\033[1m" + keywords['keyword'] + "\033[0m" +
                                               " and the dependency: " + "\033[1m" + dependency + "\033[0m" +
-                                              " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " +
-                                              str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " +
-                                              comment['id'])
+                                              " in comment\n" + "    Vulnerability: " + "\033[1m" +
+                                              str(keywords['vulnerabilities']) + "\n" + "\033[0m" + "    Domain: " +
+                                              domain + "\n" + "    Commit: " + str(commit) + "\n" + "    File: " + key +
+                                              "\n" + "    Comment ID: " + comment['id'])
                             else:
                                 print("  Found keyword: " + "\033[1m" + keywords['keyword'] + "\033[0m" +
-                                      " in comment\n" + "    Domain: " + domain + "\n" + "    Commit: " +
-                                      str(commit) + "\n" + "    File: " + key + "\n" + "    Comment ID: " +
-                                      comment['id'])
+                                      " in comment\n" + "    Vulnerability: " + "\033[1m" +
+                                      str(keywords['vulnerabilities']) + "\n" + "\033[0m" + "    Domain: " + domain +
+                                      "\n" + "    Commit: " + str(commit) + "\n" + "    File: " + key + "\n" +
+                                      "    Comment ID: " + comment['id'])
 
     @staticmethod
     def search_vccs_in_messages(base_url, keywords_json, commit, domain):
@@ -88,9 +90,10 @@ class Miner:
                                     subject = response['subject']
 
                                     print("  Found keyword: " + "\033[1m" + keywords['keyword'] + "\033[0m" +
-                                          " in message\n" + "    Domain: " + domain + "\n" + "    Commit: " +
-                                          str(commit) + "\n" + "    Subject: " + subject + "\n" + "    Message ID: " +
-                                          message['id'])
+                                          " in message\n" + "    Vulnerability: " + "\033[1m" +
+                                          str(keywords['vulnerabilities']) + "\033[0m" + "\n" + "    Domain: " + domain + "\n" +
+                                          "    Commit: " + str(commit) + "\n" + "    Subject: " + subject + "\n" +
+                                          "    Message ID: " + message['id'])
         else:
             print("Error")
 
@@ -105,10 +108,10 @@ class Miner:
         self.search_vccs_in_comments(base_url, keywords_json, commit, domain)
 
     def mine(self, domain, status):
-        k = 0
+        i = 0
 
-        while k <= 9999:
-            url = domain + "changes/?q=status:" + status + "&n=100&O=81&S=" + str(k)
+        while i <= 9999:
+            url = domain + "changes/?q=status:" + status + "&n=100&O=81&S=" + str(i)
             request = get(url)
 
             if request.status_code == 200:
@@ -119,4 +122,4 @@ class Miner:
 
                 print("")
 
-            k += 100
+            i += 100
