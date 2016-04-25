@@ -34,17 +34,27 @@ class Download:
 
             self.try_connection(url)
 
+        return request.status_code
+
     def download_comments(self, base_url, commit, domain):
         # URL to details of a commit
         url = base_url + "/comments"
 
-        self.try_connection(url)
+        with open('../../log.txt', 'a') as log:
+            if self.try_connection(url) == 200:
+                log.write(domain + str(commit) + ': OK\n')
+            elif self.try_connection(url) == 429:
+                log.write(domain + str(commit) + ': Connection refused\n')
 
     def download_details(self, base_url, commit, domain):
         # URL to details of a commit
         url = base_url + "/detail?O=10004"
 
-        self.try_connection(url)
+        with open('../../log.txt', 'a') as log:
+            if self.try_connection(url) == 200:
+                log.write(domain + str(commit) + ': OK\n')
+            elif self.try_connection(url) == 429:
+                log.write(domain + str(commit) + ': Connection refused\n')
 
     def download_data(self, commit, domain):
         # Base URL for requests
