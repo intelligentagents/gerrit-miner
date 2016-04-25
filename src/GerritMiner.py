@@ -1,5 +1,5 @@
-from LocalMiner import LocalMiner
-from RemoteMiner import RemoteMiner
+from DownloadData import Download
+from RemoteMiner import Miner
 from argparse import ArgumentParser
 from os import path, makedirs, chdir
 
@@ -24,7 +24,7 @@ def download_data(args):
 
         for stat in status:
             print("Downloading data of " + stat + " reviews from " + arg)
-            LocalMiner(arg, stat)
+            Download(arg, stat)
 
         chdir('../')
 

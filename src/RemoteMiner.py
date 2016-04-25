@@ -2,7 +2,7 @@ from requests import get
 from json import loads, load
 
 
-class RemoteMiner:
+class Miner:
     def __init__(self, domain, stat):
         self.mine(domain, stat)
 
