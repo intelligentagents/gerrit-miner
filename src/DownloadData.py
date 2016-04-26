@@ -3,6 +3,7 @@ from json import loads
 from os import path, makedirs, chdir
 from time import sleep
 from sys import stdout
+from datetime import datetime
 
 
 class Download:
@@ -42,9 +43,9 @@ class Download:
 
         with open('../../log.txt', 'a') as log:
             if self.try_connection(url) == 200:
-                log.write(domain + str(commit) + ': OK\n')
+                log.write('\t' + url + ':\n' + '\t\tStatus code: 200\n' + '\t\tTime: ' + str(datetime.now()) + '\n')
             elif self.try_connection(url) == 429:
-                log.write(domain + str(commit) + ': Connection refused\n')
+                log.write('\t' + url + ':\n' + '\t\tStatus code: 429\n' + '\t\tTime: ' + str(datetime.now()) + '\n')
 
     def download_details(self, base_url, commit, domain):
         # URL to details of a commit
@@ -52,15 +53,18 @@ class Download:
 
         with open('../../log.txt', 'a') as log:
             if self.try_connection(url) == 200:
-                log.write(domain + str(commit) + ': OK\n')
+                log.write('\t' + url + ':\n' + '\t\tStatus code: 200\n' + '\t\tTime: ' + str(datetime.now()) + '\n')
             elif self.try_connection(url) == 429:
-                log.write(domain + str(commit) + ': Connection refused\n')
+                log.write('\t' + url + ':\n' + '\t\tStatus code: 429\n' + '\t\tTime: ' + str(datetime.now()) + '\n')
 
     def download_data(self, commit, domain):
         # Base URL for requests
         base_url = domain + "changes/" + str(commit)
 
         print('\tChange ID: ' + str(commit))
+
+        with open('../../log.txt', 'a') as log:
+            log.write(domain + str(commit) + ':\n')
 
         self.download_details(base_url, commit, domain)
         self.download_comments(base_url, commit, domain)
