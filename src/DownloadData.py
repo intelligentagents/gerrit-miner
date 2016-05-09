@@ -25,11 +25,18 @@ class Download:
         elif request.status_code == 429:
             print('\t\t\tResponse status code: ' + str(request.status_code))
 
-            for remaining in range(int(request.headers['Retry-After']), 0, -1):
-                stdout.write("\r")
-                stdout.write("\t\t\t\tConnection failed. {:2d} seconds to retry".format(remaining))
-                stdout.flush()
-                sleep(1)
+            if 'retry-after' in request.headers:
+                for remaining in range(int(request.headers['retry-after']), 0, -1):
+                    stdout.write("\r")
+                    stdout.write("\t\t\t\tConnection failed. {:2d} seconds to retry".format(remaining))
+                    stdout.flush()
+                    sleep(1)
+            else:
+                for remaining in range(3600, 0, -1):
+                    stdout.write("\r")
+                    stdout.write("\t\t\t\tConnection failed. No Retry-After header found. {:2d} seconds to retry".format(remaining))
+                    stdout.flush()
+                    sleep(1)
 
             stdout.write("\r\t\t\t\tRetrying ...\n")
 
